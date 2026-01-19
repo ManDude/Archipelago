@@ -60,6 +60,17 @@ def set_all_entrance_rules(world: Crash2World) -> None:
 
     set_rule(world.get_entrance("Warp Room 5 to Dr. Neo Cortex"), lambda state: state.has("Crystal", world.player, 25))
 
+
+    set_rule(world.get_entrance("Warp Room 0 to Air Crash"),
+             lambda state: state.has("Air Crash Secret Entrance", world.player))
+    set_rule(world.get_entrance("Warp Room 0 to Snow Go"),
+             lambda state: state.has("Snow Go Secret Entrance", world.player))
+    set_rule(world.get_entrance("Warp Room 0 to Road to Ruin"),
+             lambda state: state.has("Road to Ruin Secret Entrance", world.player))
+    set_rule(world.get_entrance("Warp Room 0 to Totally Bear"),
+             lambda state: state.has("Totally Bear Secret Entrance", world.player))
+    set_rule(world.get_entrance("Warp Room 0 to Totally Fly"),
+             lambda state: state.has("Totally Fly Secret Entrance", world.player))
     # Conditions can depend on event items.
     # set_rule(right_room_to_final_boss_room, lambda state: state.has("Top Left Room Button Pressed", world.player))
 
@@ -121,6 +132,17 @@ def set_all_location_rules(world: Crash2World) -> None:
 
     set_rule(world.get_location("Spaced Out Clear Gem (All Colored Gems Path)"),
              lambda state: state.has_all(("Blue Gem", "Red Gem", "Green Gem", "Yellow Gem", "Purple Gem"), world.player))
+
+    set_rule(world.get_location("Air Crash Clear Gem (Box Gem)"),
+             lambda state: state.has("Air Crash Secret Entrance", world.player))
+
+    if not world.options.speedrun_logic: # if casual play logic
+        set_rule(world.get_location("Snow Go Red Gem"),
+                 lambda state: state.has("Snow Go Secret Entrance", world.player))
+        set_rule(world.get_location("Road to Ruin Clear Gem (Box Gem)"),
+                 lambda state: state.has("Road to Ruin Secret Entrance", world.player))
+        set_rule(world.get_location("Ruination Clear Gem (Green Gem Path)"),
+                 lambda state: state.has("Green Gem", world.player))
 
     # if world.options.hard_mode:
     #     # If you have multiple conditions, you can obviously chain them via "or" or "and".

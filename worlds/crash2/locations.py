@@ -159,7 +159,47 @@ LOCATION_NAME_TO_ID = {
 
     "Totally Bear Clear Gem (Box Gem)": 71,
     "Totally Fly Clear Gem (Box Gem)": 72,
+
+    "Turtle Woods Exit": 73,
+    "Snow Go Exit": 74,
+    "Hang Eight Exit": 75,
+    "The Pits Exit": 76,
+    "Crash Dash Exit": 77,
+    "Snow Biz Exit": 79,
+    "Air Crash Exit": 80,
+    "Bear It Exit": 81,
+    "Crash Crush Exit": 82,
+    "The Eel Deal Exit": 83,
+    "Plant Food Exit": 85,
+    "Sewer or Later Exit": 86,
+    "Bear Down Exit": 87,
+    "Road to Ruin Exit": 88,
+    "Un-Bearable Exit": 89,
+    "Hangin' Out Exit": 91,
+    "Diggin' It Exit": 92,
+    "Cold Hard Crash Exit": 93,
+    "Ruination Exit": 94,
+    "Bee-Having Exit": 95,
+    "Piston it Away Exit": 97,
+    "Rock It Exit": 98,
+    "Night Fight Exit": 99,
+    "Pack Attack Exit": 100,
+    "Spaced Out Exit": 101,
+    "Totally Bear Exit": 102,
+    "Totally Fly Exit": 103,
+
+    # Secret exits
+    "Air Crash Secret Exit": 104,
+    "Hangin' Out Secret Exit": 105,
+    "Diggin' It Secret Exit": 106,
+    "Un-Bearable Secret Exit": 107,
+    "Bear Down Secret Exit": 108,
+
+    # Extra
+
+    "Polar Lives Secret": 109,
 }
+
 
 
 
@@ -192,12 +232,23 @@ def create_regular_locations(world: Crash2World) -> None:
     # bottom_right_room = world.get_region("Bottom Right Room")
     # right_room = world.get_region("Right Room")
 
+    #level_exits_option = False # this will be an option in the future maybe
+
     locations = LOCATION_NAME_TO_ID.keys()
     for name in level_names:
         region = world.get_region(name)
         for location in locations:
             if name in location:
-                region.locations.append(Crash2Location(world.player, location, world.location_name_to_id[location], region))
+                if not world.options.level_exit_locations and "Exit" in location and "Secret Exit" not in location:
+                    continue
+                region.locations.append(
+                    Crash2Location(world.player, location, world.location_name_to_id[location], region))
+    location = "Polar Lives Secret"
+    region = world.get_region("Warp Room 2")
+    region.locations.append(
+        Crash2Location(world.player, location, world.location_name_to_id[location], region))
+
+
 
     # region = world.get_region("Dr. Neo Cortex")
     # location = ""
@@ -249,6 +300,26 @@ def create_events(world: Crash2World) -> None:
 
     world.get_region("Dr. Neo Cortex").add_event(
         "Dr. Neo Cortex Defeated", "Victory", location_type=Crash2Location, item_type=items.Crash2Item
+    )
+
+    world.get_region("Air Crash").add_event(
+        "Air Crash Secret Exit Event", "Snow Go Secret Entrance", location_type=Crash2Location, item_type=items.Crash2Item
+    )
+    world.get_region("Bear Down").add_event(
+        "Bear Down Secret Exit Event", "Air Crash Secret Entrance", location_type=Crash2Location,
+        item_type=items.Crash2Item
+    )
+    world.get_region("Un-Bearable").add_event(
+        "Un-Bearable Secret Exit Event", "Totally Bear Secret Entrance", location_type=Crash2Location,
+        item_type=items.Crash2Item
+    )
+    world.get_region("Hangin' Out").add_event(
+        "Hangin' Out Secret Exit Event", "Totally Fly Secret Entrance", location_type=Crash2Location,
+        item_type=items.Crash2Item
+    )
+    world.get_region("Diggin' It").add_event(
+        "Diggin' It Secret Exit Event", "Road to Ruin Secret Entrance", location_type=Crash2Location,
+        item_type=items.Crash2Item
     )
     # # Sometimes, the player may perform in-game actions that allow them to progress which are not related to Items.
     # # In our case, the player must press a button in the top left room to open the final boss door.

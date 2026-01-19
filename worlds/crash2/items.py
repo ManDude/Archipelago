@@ -52,8 +52,9 @@ def get_random_filler_item_name(world: Crash2World) -> str:
     # IMPORTANT: Whenever you need to use a random generator, you must use world.random.
     # This ensures that generating with the same generator seed twice yields the same output.
     # DO NOT use a bare random object from Python's built-in random module.
-    # if world.random.randint(0, 99) < world.options.trap_chance:
-    #     return "Math Trap"
+    if world.random.randint(0, 99) < world.options.wumpa_chance:
+        return "Wumpa Fruit"
+
     return "Life"
 
 
@@ -91,7 +92,7 @@ def create_all_items(world: Crash2World) -> None:
         world.create_item("Yellow Gem"),
         world.create_item("Purple Gem"),
     ]
-    for i in range(25):
+    for i in range(25 + int(world.options.extra_crystals)):
         itempool += [world.create_item("Crystal")]
     for i in range(37):
         itempool += [world.create_item("Clear Gem")]
