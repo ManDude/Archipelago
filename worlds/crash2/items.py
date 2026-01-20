@@ -18,7 +18,8 @@ ITEM_NAME_TO_ID = {
     "Green Gem" : 5,
     "Yellow Gem" : 6,
     "Purple Gem" : 7,
-    "Life" : 8
+    "Life" : 8,
+    "Wumpa Fruit" : 9,
 }
 
 # Items should have a defined default classification.
@@ -32,6 +33,7 @@ DEFAULT_ITEM_CLASSIFICATIONS = {
     "Yellow Gem" : ItemClassification.progression,
     "Purple Gem" : ItemClassification.progression,
     "Life" : ItemClassification.filler,
+    "Wumpa Fruit" : ItemClassification.filler,
 }
 
 
