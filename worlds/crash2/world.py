@@ -24,8 +24,7 @@ from . import options as crash2_options  # rename due to a name conflict with Wo
 # It is recommended that you read these in that specific order, then come back to the world class.
 class Crash2World(World):
     """
-    APQuest is a minimal 8bit-era inspired adventure game with grid-like movement.
-    Good games don't need more than six checks.
+    Crash 2
     """
 
     # The docstring should contain a description of the game, to be displayed on the WebHost.
@@ -43,6 +42,7 @@ class Crash2World(World):
 
     # Our world class must have a static location_name_to_id and item_name_to_id defined.
     # We define these in regions.py and items.py respectively, so we just set them here.
+    #locations.prepare_fruit_sanity(self)
     location_name_to_id = locations.LOCATION_NAME_TO_ID
     item_name_to_id = items.ITEM_NAME_TO_ID
 
@@ -81,6 +81,6 @@ class Crash2World(World):
     # slot_data is just a dictionary using basic types, that will be converted to json when sent to the client.
     def fill_slot_data(self) -> Mapping[str, Any]:
         # If you need access to the player's chosen options on the client side, there is a helper for that.
-        return self.options.as_dict(
-            "start_inventory"
-        )
+        return {"options": self.options.as_dict(
+            "fruit_sanity"
+        )}

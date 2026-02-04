@@ -56,28 +56,18 @@ class WumpaFruitChance(Range):
     range_end = 100
     default = 0
 
+class FruitSanity(Choice):
+    """
+    Add wumpa fruit checks
+    """
+    display_name = "Fruit-Sanity"
 
-# # A Choice is an option with multiple discrete choices. This will be represented by a dropdown on the website.
-# class PlayerSprite(Choice):
-#     """
-#     The sprite that the player will have.
-#     """
-#
-#     display_name = "Player Sprite"
-#
-#     option_human = 0
-#     option_duck = 1
-#     option_horse = 2
-#     option_cat = 3
-#
-#     # Choice options must define an explicit default value.
-#     default = option_human
-#
-#     # For choices, you can also define aliases.
-#     # For example, we could make it so "player_sprite: kitty" resolves to "player_sprite: cat" like this:
-#     alias_kitty = option_cat
-#
-#
+    option_disabled = 0
+    option_fruit_bundles = 1
+    option_full_sanity = 2
+
+    default = option_disabled
+
 # # We must now define a dataclass inheriting from PerGameCommonOptions that we put all our options in.
 # # This is in the format "option_name_in_snake_case: OptionClassName".
 @dataclass
@@ -86,6 +76,7 @@ class Crash2Options(PerGameCommonOptions):
     extra_crystals: AddExtraCrystals
     speedrun_logic: SpeedrunLogic
     wumpa_chance: WumpaFruitChance
+    fruit_sanity: FruitSanity
     # hard_mode: HardMode
     # hammer: Hammer
     # extra_starting_chest: ExtraStartingChest
