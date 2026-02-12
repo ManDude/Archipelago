@@ -336,8 +336,11 @@ def create_regular_locations(world: Crash2World) -> None:
                 if "Wumpa #" in location:
                     if world.options.fruit_sanity != 2:
                         continue
+
                 region.locations.append(
                     Crash2Location(world.player, location, world.location_name_to_id[location], region))
+                if "Impossible" in location and not world.options.speedrun_logic:
+                    world.get_location(location).place_locked_item(world.create_item("Life"))
     location = "Polar Lives Secret"
     region = world.get_region("Warp Room 2")
     region.locations.append(

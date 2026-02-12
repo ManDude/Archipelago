@@ -139,7 +139,8 @@ def set_all_location_rules(world: Crash2World) -> None:
                 set_rule(location,
                          lambda state: state.has(gem_color + " Gem", world.player))
             # elif "Impossible" in location.name:
-            #     set_rule(location, lambda x: False)
+            #     set_rule(location, lambda x: False)\
+            location.item_rule
 
     set_rule(world.get_location("Hang Eight Clear Gem (Box Gem)"),
              lambda state: state.has("Blue Gem", world.player))
