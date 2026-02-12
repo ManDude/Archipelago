@@ -9,6 +9,40 @@ from . import items
 if TYPE_CHECKING:
     from .world import Crash2World
 
+levelNameToId = {
+    "Turtle Woods": 0x1E ,
+    "Snow Go": 0x0E ,
+    "Hang Eight": 0x19 ,
+    "The Pits": 0x1F ,
+    "Crash Dash": 0x18 ,
+    "Ripper Roo": 0x06 ,
+    "Snow Biz": 0x11 ,
+    "Air Crash": 0x20 ,
+    "Bear It": 0x1D ,
+    "Crash Crush": 0x1B ,
+    "The Eel Deal": 0x23 ,
+    "Komodo Brothers": 0x08 ,
+    "Plant Food": 0x21 ,
+    "Sewer or Later": 0x0A ,
+    "Bear Down": 0x22 ,
+    "Road to Ruin": 0x16 ,
+    "Un-Bearable": 0x17 ,
+    "Tiny Tiger": 0x03 ,
+    "Hangin' Out": 0x0D ,
+    "Diggin' It": 0x15 ,
+    "Cold Hard Crash": 0x13 ,
+    "Ruination": 0x0F ,
+    "Bee-Having": 0x24 ,
+    "Dr. N. Gin": 0x09 ,
+    "Piston it Away": 0x10 ,
+    "Rock It": 0x12 ,
+    "Night Fight": 0x0C ,
+    "Pack Attack": 0x1A ,
+    "Spaced Out": 0x26 ,
+    "Dr. Neo Cortex": 0x07 ,
+    "Totally Bear": 0x25 ,
+    "Totally Fly": 0x27 ,
+}
 level_names = ["Turtle Woods",
                "Snow Go",
                "Hang Eight",
@@ -204,7 +238,7 @@ LOCATION_NAME_TO_ID = {
     # "Test Location 2": 10002,
 }
 
-
+# Fruit_Sanity_Data = {}
 
 
 # Each Location instance must correctly report the "game" it belongs to.
@@ -213,33 +247,53 @@ class Crash2Location(Location):
     game = "Crash2"
 
 
-# def prepare_fruit_sanity(world: Crash2World):
-#     if world.options.fruit_sanity == 1:
-#         level_name = ""
-#         bundle_name = ""
-#         id = 10000
-#         wumpa_count = 0
-#         #with open("fruitbundles.txt", "r") as file:
-#
-#         for line in fruitbundlestxt.splitlines():
-#             if line[0] == "#":
-#                 if "level: " in line:
-#                     level_name = line.replace("#level: ", "")
-#                 else:
-#                     if bundle_name != "":
-#                         #add the location
-#                         location_name = level_name + " " + bundle_name + " bundle (" + str(wumpa_count) + " wumpas)"
-#                         #world.location_name_to_id[location_name] = id
-#                         LOCATION_NAME_TO_ID[location_name] = id
-#                         id += 1
-#                         wumpa_count = 0
-#                         # region = world.get_region(level_name)
-#                         # region.locations.append(
-#                         #     Crash2Location(world.player, location_name, world.location_name_to_id[location_name], region))
-#
-#                     bundle_name = line.replace("#", "")
-#             if len(line.split("-")) == 2:
-#                 wumpa_count += 1
+def prepare_fruit_sanity():
+
+    level_name = ""
+    bundle_name = ""
+    bundle_location_name = ""
+    wumpa_location_name = ""
+    location_name = ""
+    bundle_id = 10000
+    wumpa_id = 20000
+    wumpa_count = 0
+
+    # with open("fruitbundles.txt", "r") as file:
+    # f = open("test_file_wumpas.txt", "w")
+    for line in fruitbundlestxt.splitlines():
+        if line[0] == "#":
+            if "level: " in line:
+                level_name = line.replace("#level: ", "")
+                # Fruit_Sanity_Data[level_name] = {}
+            else:
+                if bundle_name != "":
+                    # add the location
+                    bundle_location_name = level_name + " " + bundle_name + " Bundle (" + str(wumpa_count) + " Wumpas)"
+                    LOCATION_NAME_TO_ID[bundle_location_name] = bundle_id
+                    bundle_id += 1
+                    wumpa_count = 0
+
+                bundle_name = line.replace("#", "")
+                # Fruit_Sanity_Data[level_name][bundle_name] = ([], bundle_id)
+
+                location_name = level_name + " " + bundle_name
+        elif len(line.split("-")) == 2:
+            wumpa_count += 1
+            # if world.options.fruit_sanity == 2:  # if full sanity, add location for each wumpa
+            wumpa_location_name = location_name + " Wumpa #" + str(wumpa_count)
+                # world.location_name_to_id[wumpa_location_name] = id
+            LOCATION_NAME_TO_ID[wumpa_location_name] = wumpa_id
+
+            # f.write(hex(levelNameToId[level_name]).replace("0x", "").upper() + "-" + line.split("-")[1] + ":" + str(wumpa_id) +"\n")
+            # Fruit_Sanity_Data[level_name][bundle_name][0].append(wumpa_id)
+            wumpa_id += 1
+                # region = world.get_region(level_name)
+                # region.locations.append(
+                #     Crash2Location(world.player, wumpa_location_name,
+                #                    world.location_name_to_id[wumpa_location_name], region))
+    # print("bundle id :" + str(bundle_id))
+    # print("wumpa id :" + str(wumpa_id))
+    # f.close()
 
 # Let's make one more helper method before we begin actually creating locations.
 # Later on in the code, we'll want specific subsections of LOCATION_NAME_TO_ID.
@@ -273,6 +327,12 @@ def create_regular_locations(world: Crash2World) -> None:
             if name in location:
                 if not world.options.level_exit_locations and "Exit" in location and "Secret Exit" not in location:
                     continue
+                if "Bundle" in location:
+                    if world.options.fruit_sanity != 1:
+                        continue
+                if "Wumpa #" in location:
+                    if world.options.fruit_sanity != 2:
+                        continue
                 region.locations.append(
                     Crash2Location(world.player, location, world.location_name_to_id[location], region))
     location = "Polar Lives Secret"
@@ -281,47 +341,46 @@ def create_regular_locations(world: Crash2World) -> None:
         Crash2Location(world.player, location, world.location_name_to_id[location], region))
 
 
-    if world.options.fruit_sanity != 0:
-        level_name = ""
-        bundle_name = ""
-        location_name = ""
-        id = 10000
-        if world.options.fruit_sanity == 2:
-            id = 20000
-        wumpa_count = 0
-        #with open("fruitbundles.txt", "r") as file:
-
-        for line in fruitbundlestxt.splitlines():
-            if line[0] == "#":
-                if "level: " in line:
-                    level_name = line.replace("#level: ", "")
-                else:
-                    if bundle_name != "":
-                        # add the location
-                        if world.options.fruit_sanity == 1: # if bundles then add a bundle location
-                            location_name = level_name + " " + bundle_name + " Bundle (" + str(wumpa_count) + " Wumpas)"
-                            world.location_name_to_id[location_name] = id
-                            LOCATION_NAME_TO_ID[location_name] = id
-                            id += 1
-                            region = world.get_region(level_name)
-                            region.locations.append(
-                                Crash2Location(world.player, location_name, world.location_name_to_id[location_name], region))
-                        #else:
-                        #    location_name = level_name + " " + bundle_name
-                        wumpa_count = 0
-                    bundle_name = line.replace("#", "")
-                    if world.options.fruit_sanity == 2:
-                        location_name = level_name + " " + bundle_name
-            if len(line.split("-")) == 2:
-                wumpa_count += 1
-                if world.options.fruit_sanity == 2: # if full sanity, add location for each wumpa
-                    wumpa_location_name = location_name + " Wumpa #" + str(wumpa_count)
-                    world.location_name_to_id[wumpa_location_name] = id
-                    LOCATION_NAME_TO_ID[wumpa_location_name] = id
-                    id += 1
-                    region = world.get_region(level_name)
-                    region.locations.append(
-                        Crash2Location(world.player, wumpa_location_name, world.location_name_to_id[wumpa_location_name], region))
+    # if world.options.fruit_sanity != 0:
+    #     level_name = ""
+    #     bundle_name = ""
+    #     location_name = ""
+    #     # id = 10000
+    #     # if world.options.fruit_sanity == 2:
+    #     #     id = 20000
+    #     wumpa_count = 0
+    #     #with open("fruitbundles.txt", "r") as file:
+    #
+    #     for line in fruitbundlestxt.splitlines():
+    #         if line[0] == "#":
+    #             if "level: " in line:
+    #                 level_name = line.replace("#level: ", "")
+    #             else:
+    #                 if bundle_name != "":
+    #                     # add the location
+    #                     if world.options.fruit_sanity == 1: # if bundles then add a bundle location
+    #                         location_name = level_name + " " + bundle_name + " Bundle (" + str(wumpa_count) + " Wumpas)"
+    #                         #world.location_name_to_id[location_name] = id
+    #                         #LOCATION_NAME_TO_ID[location_name] = id
+    #                         # id += 1
+    #                         print("---" + location_name + str(world.location_name_to_id[location_name]))
+    #                         region = world.get_region(level_name)
+    #                         region.locations.append(
+    #                             Crash2Location(world.player, location_name, world.location_name_to_id[location_name], region))
+    #                     wumpa_count = 0
+    #                 bundle_name = line.replace("#", "")
+    #                 if world.options.fruit_sanity == 2:
+    #                     location_name = level_name + " " + bundle_name
+    #         if len(line.split("-")) == 2:
+    #             wumpa_count += 1
+    #             if world.options.fruit_sanity == 2: # if full sanity, add location for each wumpa
+    #                 wumpa_location_name = location_name + " Wumpa #" + str(wumpa_count)
+    #                 #world.location_name_to_id[wumpa_location_name] = id
+    #                 #LOCATION_NAME_TO_ID[wumpa_location_name] = id
+    #                 # id += 1
+    #                 region = world.get_region(level_name)
+    #                 region.locations.append(
+    #                     Crash2Location(world.player, wumpa_location_name, world.location_name_to_id[wumpa_location_name], region))
 
 
     # region = world.get_region("Dr. Neo Cortex")
@@ -435,7 +494,7 @@ def create_events(world: Crash2World) -> None:
     # # That way, we're not just mindlessly copy-pasting! :)
 
 fruitbundlestxt = """#level: Turtle Woods
-1e
+1E
 #Checkpoint 0
 0-25
 0-23
@@ -1254,41 +1313,37 @@ F-119
 0-38
 0-37
 0-35
-#clear
-1-14D
+#Bonus Big Jump Part 1
+1-152
+1-151
+1-150
 1-14F
 1-14E
-#Bonus Big Jump Part 1
-2-152
-2-151
-2-150
-2-14F
-2-14E
-2-14D
+1-14D
 #Bonus Big Jump Part 2
-3-15A
-3-159
-3-157
-3-155
-3-154
-3-153
+2-15A
+2-159
+2-157
+2-155
+2-154
+2-153
 #Bonus Big Jump Part 3
-4-15F
-4-160
-4-15E
-4-15D
-4-15C
-4-15B
+3-15F
+3-160
+3-15E
+3-15D
+3-15C
+3-15B
 #Death Route Start
-5-4C
-5-4B
-5-4A
+4-4C
+4-4B
+4-4A
 #Death Route After Moving Pillars
-6-56
-6-55
-6-50
-6-4F
-6-4E
+5-56
+5-55
+5-50
+5-4F
+5-4E
 #level: Bear It
 1D
 #Start Zig Zag
@@ -3027,7 +3082,7 @@ A-DE
 0-11
 0-10
 0-F
-#Around Lazer 1
+#Around Laser 1
 1-20
 1-1F
 1-1E
@@ -3036,7 +3091,7 @@ A-DE
 1-1B
 1-1A
 1-19
-#Around Lazer 2
+#Around Laser 2
 2-24
 2-26
 2-25

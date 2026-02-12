@@ -121,6 +121,26 @@ def set_all_location_rules(world: Crash2World) -> None:
     # # Well, we can achieve this by doing the "if world.options.hard_mode" check outside the set_rule call,
     # # and instead having two *different* set_rule calls depending on which case we're in.
 
+
+    # handle some general rules for wumpa checks
+    if world.options.fruit_sanity != 0:
+        for location in world.get_locations():
+            if "Secret Entrance" in location.name:
+                level_name = location.name[:location.name.find(" Secret Entrance")]
+                if level_name == "Road to Ruin" and world.options.speedrun_logic:
+                    continue
+                set_rule(location,
+                         lambda state: state.has(level_name + " Secret Entrance", world.player))
+            elif "Gem Path" in location.name:
+                split_location = location.name.split(" ")
+                gem_color = split_location[split_location.index("Gem") - 1]
+                if gem_color == "Green" and world.options.speedrun_logic:
+                    continue
+                set_rule(location,
+                         lambda state: state.has(gem_color + " Gem", world.player))
+            # elif "Impossible" in location.name:
+            #     set_rule(location, lambda x: False)
+
     set_rule(world.get_location("Hang Eight Clear Gem (Box Gem)"),
              lambda state: state.has("Blue Gem", world.player))
 
