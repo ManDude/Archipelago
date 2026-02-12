@@ -129,6 +129,7 @@ def set_all_location_rules(world: Crash2World) -> None:
                 level_name = location.name[:location.name.find(" Secret Entrance")]
                 if level_name == "Road to Ruin" and world.options.speedrun_logic:
                     continue
+                #print(location.name + " | needs | " + level_name + " Secret Entrance")
                 set_rule(location,
                          lambda state: state.has(level_name + " Secret Entrance", world.player))
             elif "Gem Path" in location.name:

@@ -265,17 +265,16 @@ def prepare_fruit_sanity():
 
     for line in data.fruitbundlestxt.splitlines():
         if line[0] == "#":
+            if bundle_name != "":
+                # add the location
+                bundle_location_name = level_name + " " + bundle_name + " Bundle (" + str(wumpa_count) + " Wumpas)"
+                LOCATION_NAME_TO_ID[bundle_location_name] = bundle_id
+                bundle_id += 1
+                wumpa_count = 0
             if "level: " in line:
                 level_name = line.replace("#level: ", "")
                 # Fruit_Sanity_Data[level_name] = {}
             else:
-                if bundle_name != "":
-                    # add the location
-                    bundle_location_name = level_name + " " + bundle_name + " Bundle (" + str(wumpa_count) + " Wumpas)"
-                    LOCATION_NAME_TO_ID[bundle_location_name] = bundle_id
-                    bundle_id += 1
-                    wumpa_count = 0
-
                 bundle_name = line.replace("#", "")
                 # Fruit_Sanity_Data[level_name][bundle_name] = ([], bundle_id)
 
