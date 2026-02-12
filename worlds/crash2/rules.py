@@ -125,23 +125,26 @@ def set_all_location_rules(world: Crash2World) -> None:
     # handle some general rules for wumpa checks
     if world.options.fruit_sanity != 0:
         for location in world.get_locations():
+            if "Wumpa" not in location.name:
+                continue
             if "Secret Entrance" in location.name:
                 level_name = location.name[:location.name.find(" Secret Entrance")]
                 if level_name == "Road to Ruin" and world.options.speedrun_logic:
                     continue
-                #print(location.name + " | needs | " + level_name + " Secret Entrance")
+                access_item = level_name + " Secret Entrance"
                 set_rule(location,
-                         lambda state: state.has(level_name + " Secret Entrance", world.player))
+                         lambda state, access_item=access_item: state.has(access_item, world.player))
+                # print("rule: " + location.name + ", needs: " + level_name + " Secret Entrance")
             elif "Gem Path" in location.name:
                 split_location = location.name.split(" ")
                 gem_color = split_location[split_location.index("Gem") - 1]
                 if gem_color == "Green" and world.options.speedrun_logic:
                     continue
+                access_item = gem_color + " Gem"
                 set_rule(location,
-                         lambda state: state.has(gem_color + " Gem", world.player))
-            # elif "Impossible" in location.name:
-            #     set_rule(location, lambda x: False)\
-            location.item_rule
+                         lambda state, access_item=access_item: state.has(access_item, world.player))
+                # print("rule: " + location.name + ", needs: " + gem_color + " Gem")
+
 
     set_rule(world.get_location("Hang Eight Clear Gem (Box Gem)"),
              lambda state: state.has("Blue Gem", world.player))
