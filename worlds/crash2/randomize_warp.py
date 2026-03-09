@@ -88,12 +88,6 @@ levelNameToId = {
     "Totally Fly": 0x27,
 }
 
-# gets the name of the level with that level ID. array where the index is the level ID you want. level IDs cannot go above 0x3F (63).
-levelIdToName = [None] * (64 + 256)
-# fills array based on map defined right above this!
-for name in levelNameToId:
-    levelIdToName[levelNameToId[name]] = name
-
 def get_nth_element_index(lst, element, occurrence):
     index = 0
     occ = 0
